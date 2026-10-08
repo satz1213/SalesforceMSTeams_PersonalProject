@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Object_Api_Name__c</fullName>
+    <label>Object API Name</label>
+    <type>Text</type>
+    <length>255</length>
+    <required>true</required>
+    <description>Which SObject this pinned tab shows (e.g. "Opportunity") - drives the UI API list-view calls exactly like an app-nav-derived tab does, just sourced from this record instead of the user's Salesforce app navigation.</description>
+</CustomField>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Swarm_Chat_Delete_Error__c</fullName>
+    <description
+  >Set when TeamsSwarmChatDeleteQueueable fails to delete the Teams chat after End Chat saved the transcript (most often missing Chat.ManageDeletion.All consent on the MS_Graph app registration). The transcript and the Case reset still succeeded - this only means the chat is still present in Microsoft Teams and needs deleting by hand. Cleared on the next successful delete.</description>
+    <externalId>false</externalId>
+    <label>Swarm Chat Delete Error</label>
+    <length>4096</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>5</visibleLines>
+</CustomField>

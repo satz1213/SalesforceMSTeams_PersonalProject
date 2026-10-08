@@ -1,0 +1,121 @@
+.toolbar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.live-mode {
+    margin-right: auto;
+    font-size: 0.75rem;
+    line-height: 1.25;
+    padding: 0.15rem 0.45rem;
+    border-radius: 0.25rem;
+    white-space: nowrap;
+}
+
+.live-mode_push {
+    background: #e3fce3;
+    color: #046b1b;
+}
+
+.live-mode_poll {
+    background: #f3f2f2;
+    color: #3e3e3c;
+}
+
+.live-mode_warn {
+    background: #fbf3e0;
+    color: #8c4b02;
+}
+
+.chat-pane {
+    max-height: 420px;
+    overflow-y: auto;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    background: #f3f2f2;
+    padding: 0.75rem;
+    /* LEX / utility hosts often set user-select:none on ancestors */
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+.chat-pane-end {
+    height: 1px;
+    width: 100%;
+}
+
+.chat-pane_compact {
+    max-height: 260px;
+}
+
+.row {
+    display: flex;
+    margin-bottom: 0.5rem;
+}
+
+.row_inbound {
+    justify-content: flex-start;
+}
+
+.row_outbound {
+    justify-content: flex-end;
+}
+
+.bubble {
+    max-width: 80%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+    -webkit-user-select: text;
+    user-select: text;
+    position: relative;
+}
+
+.bubble_inbound {
+    background: #ffffff;
+    border: 1px solid #dddbda;
+}
+
+.bubble_outbound {
+    /* Same selectable text treatment as inbound — solid blue fills look like a non-text block in LEX */
+    background: #e8f4ff;
+    border: 1px solid #0176d3;
+    color: #181818;
+    -webkit-user-select: text !important;
+    user-select: text !important;
+}
+
+.bubble-meta {
+    font-size: 0.7rem;
+    opacity: 0.8;
+    margin-bottom: 0.2rem;
+}
+
+.bubble_outbound .bubble-meta {
+    color: #0176d3;
+    opacity: 1;
+}
+
+.bubble-body {
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.875rem;
+    line-height: 1.35;
+    -webkit-user-select: text !important;
+    user-select: text !important;
+    cursor: text;
+}
+
+.bubble-body::selection,
+.bubble_outbound .bubble-body::selection,
+.bubble_inbound .bubble-body::selection {
+    background: #0176d3;
+    color: #ffffff;
+}
+
+.composer lightning-textarea {
+    width: 100%;
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OauthTokenExchangeHandler xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Validates a Teams SSO Azure AD token and maps it to a Salesforce User via Azure_AD_Email_Id__c, for the &quot;Salesforce in Teams&quot; tab (salesforceTabHome.js).</description>
+    <developerName>Salesforce_In_Teams_TokenExchange</developerName>
+    <isAccessTokenSupported>true</isAccessTokenSupported>
+    <isContactCreationAllowed>false</isContactCreationAllowed>
+    <isEnabled>true</isEnabled>
+    <isIdTokenSupported>false</isIdTokenSupported>
+    <isJwtSupported>false</isJwtSupported>
+    <isRefreshTokenSupported>false</isRefreshTokenSupported>
+    <isSaml2Supported>false</isSaml2Supported>
+    <isUserCreationAllowed>false</isUserCreationAllowed>
+    <masterLabel>Salesforce In Teams Token Exchange</masterLabel>
+    <tokenHandlerApex>SalesforceInTeamsTokenExchangeHandler</tokenHandlerApex>
+</OauthTokenExchangeHandler>

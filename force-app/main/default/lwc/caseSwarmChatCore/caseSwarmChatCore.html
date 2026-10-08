@@ -1,0 +1,92 @@
+<template>
+    <div class="core">
+        <template if:true={showBody}>
+            <div class="toolbar">
+                <template if:true={chatEnabled}>
+                    <span class={liveModeClass} title={liveModeLabel}>{liveModeLabel}</span>
+                    <lightning-button
+                        class="slds-m-right_xx-small"
+                        label="Sync"
+                        icon-name="utility:refresh"
+                        disabled={isSyncing}
+                        onclick={handleSyncNow}
+                    ></lightning-button>
+                    <template if:true={showEndChatButton}>
+                        <lightning-button
+                            class="slds-m-right_xx-small"
+                            label="End Chat"
+                            title="Save Teams messages to the Case transcript"
+                            icon-name="utility:check"
+                            disabled={isEndChatDisabled}
+                            onclick={handleEndChat}
+                        ></lightning-button>
+                    </template>
+                </template>
+                <template if:true={teamUrl}>
+                    <lightning-button
+                        label="Open in Teams"
+                        icon-name="utility:new_window"
+                        onclick={handleOpenTeams}
+                    ></lightning-button>
+                </template>
+            </div>
+
+            <template if:false={chatEnabled}>
+                <div class="slds-box slds-theme_shade slds-m-top_x-small">
+                    <p class="slds-text-body_regular">{disabledReason}</p>
+                    <p class="slds-text-body_small slds-m-top_x-small slds-text-color_weak">
+                        Start a <strong>Quick chat</strong> swarm from Case Swarm to enable chat.
+                    </p>
+                </div>
+            </template>
+
+            <template if:true={chatEnabled}>
+                <template if:true={showIntro}>
+                    <p class="slds-text-body_small slds-m-vertical_x-small slds-text-color_weak">
+                        {introText}
+                    </p>
+                </template>
+
+                <template if:true={isLoading}>
+                    <div class="slds-align_absolute-center slds-p-around_medium">
+                        <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                    </div>
+                </template>
+
+                <div class={chatPaneClass} data-id="chat-pane">
+                    <template if:false={hasMessages}>
+                        <p class="slds-text-body_small slds-text-color_weak slds-p-around_small">
+                            No messages yet. Send one below, or wait for a Teams reply.
+                        </p>
+                    </template>
+
+                    <template for:each={formattedMessages} for:item="msg">
+                        <div key={msg.key} class={msg.rowClass}>
+                            <div class={msg.bubbleClass}>
+                                <div class="bubble-meta">{msg.metaLabel}</div>
+                                <p class="bubble-body">{msg.body}</p>
+                            </div>
+                        </div>
+                    </template>
+                    <div data-id="chat-pane-end" class="chat-pane-end"></div>
+                </div>
+
+                <div class="composer slds-m-top_small">
+                    <lightning-textarea
+                        label="Message"
+                        variant="label-hidden"
+                        placeholder="Type a message to the Teams swarm..."
+                        value={draft}
+                        disabled={isComposerDisabled}
+                        onchange={handleDraftChange}
+                        onkeydown={handleComposerKeydown}
+                        max-length="4000"
+                    ></lightning-textarea>
+                    <div class="slds-m-top_x-small slds-grid slds-grid_align-end">
+                        <lightning-button variant="brand" label="Send" disabled={isSendDisabled} onclick={handleSend}></lightning-button>
+                    </div>
+                </div>
+            </template>
+        </template>
+    </div>
+</template>

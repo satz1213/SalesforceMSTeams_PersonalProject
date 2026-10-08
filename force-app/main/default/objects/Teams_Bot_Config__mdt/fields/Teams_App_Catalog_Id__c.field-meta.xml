@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Teams_App_Catalog_Id__c</fullName>
+    <description>The id (Graph appCatalogs/teamsApps id, not the manifest's id/appId) of this bot's custom Teams app once uploaded to the org's app catalog. Used to install the app into a swarm chat via POST /chats/{id}/installedApps - see TeamsSwarmService.installBotApp.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Teams App Catalog Id</label>
+    <length>255</length>
+    <required>true</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

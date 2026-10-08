@@ -1,0 +1,13 @@
+{
+  "name": "teams-bot-relay",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bot Framework ↔ Salesforce relay plus chatHistory/chatSend Graph/Bot proxy and optional Azure SignalR push (Option D) for Case Swarm Chat.",
+  "main": "src/functions/*.js",
+  "scripts": {
+    "start": "func start"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.0.0"
+  }
+}

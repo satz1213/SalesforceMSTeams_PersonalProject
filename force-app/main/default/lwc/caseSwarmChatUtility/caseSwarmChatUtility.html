@@ -1,0 +1,67 @@
+<template>
+    <div class="utility-shell">
+        <div class="slds-p-around_small">
+            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align_center slds-m-bottom_x-small">
+                <h2 class="slds-text-heading_small">Swarm Chat</h2>
+                <lightning-button label="Refresh" onclick={handleRefresh} disabled={isLoading}></lightning-button>
+            </div>
+
+            <p class="slds-text-body_small slds-m-bottom_x-small">{displayStatus}</p>
+            <template if:true={listenStatus}>
+                <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">{listenStatus}</p>
+            </template>
+
+            <div class="slds-box slds-theme_shade slds-m-bottom_small add-box">
+                <lightning-input
+                    label="Add Case Id"
+                    value={manualCaseId}
+                    onchange={handleManualIdChange}
+                    placeholder="500..."
+                ></lightning-input>
+                <div class="slds-m-top_x-small slds-grid slds-gutters_xx-small">
+                    <div class="slds-col">
+                        <lightning-button
+                            variant="brand"
+                            label="Add Case"
+                            onclick={handleAddManualId}
+                        ></lightning-button>
+                    </div>
+                    <div class="slds-col">
+                        <lightning-button label="Add current Case" onclick={handleAddCurrentCase}></lightning-button>
+                    </div>
+                </div>
+            </div>
+
+            <template if:true={hasRows}>
+                <ul class="swarm-list" role="list">
+                    <template for:each={rows} for:item="row">
+                        <li key={row.caseId} class={row.rowClass}>
+                            <button
+                                type="button"
+                                class="swarm-row-btn"
+                                data-case-id={row.caseId}
+                                title={row.title}
+                                onclick={handleOpenCase}
+                            >
+                                <span class="swarm-case-number">{row.caseNumber}</span>
+                                <template if:true={row.subject}>
+                                    <span class="swarm-subject slds-truncate">{row.subject}</span>
+                                </template>
+                                <template if:true={row.hasUnread}>
+                                    <span class="swarm-unread" aria-label={row.unreadAria}>{row.unreadLabel}</span>
+                                </template>
+                            </button>
+                        </li>
+                    </template>
+                </ul>
+            </template>
+
+            <template if:false={hasRows}>
+                <p class="slds-text-body_small slds-text-color_weak">
+                    Active Chat swarms you can see appear here. Click a Case number to open it and reply
+                    from the Case chat UI.
+                </p>
+            </template>
+        </div>
+    </div>
+</template>

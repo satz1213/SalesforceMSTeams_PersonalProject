@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Scheduled_Expert__c</fullName>
+    <label>Scheduled Expert</label>
+    <type>Lookup</type>
+    <referenceTo>Expert__c</referenceTo>
+    <relationshipLabel>Scheduled Calls</relationshipLabel>
+    <relationshipName>Scheduled_Calls</relationshipName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Set by the "Schedule Expert Call" prototype in the Salesforce-in-Teams record page when an agent picks a suggested time slot. Deliberately not a Case Owner reassignment - most Expert__c prototype records have no Linked_User__c (no real Salesforce User), so there's nothing valid to reassign Owner to. This field is the real, honest record of the scheduling decision instead.</description>
+</CustomField>

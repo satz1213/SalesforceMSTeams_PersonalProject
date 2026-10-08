@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Teams Pinned Tab</label>
+    <pluralLabel>Teams Pinned Tabs</pluralLabel>
+    <nameField>
+        <label>Pin Number</label>
+        <type>AutoNumber</type>
+        <displayFormat>PIN-{0000}</displayFormat>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>Private</sharingModel>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>false</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <description>One record per object tab a person has personally pinned onto the "Salesforce Org" Teams tab's header, beyond whatever their own Salesforce app's navigation already shows there automatically (see salesforceTabHome.js's loadAppNavObjectTabs()). Private sharing model and explicitly filtered by OwnerId when queried - this is per-person data, nobody else's pins should ever be visible to another user regardless of org-wide defaults.</description>
+</CustomObject>

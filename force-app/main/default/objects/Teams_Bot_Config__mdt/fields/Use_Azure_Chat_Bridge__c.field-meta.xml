@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Use_Azure_Chat_Bridge__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>When true, Case Swarm Chat uses the Azure Functions proxy (LWC→Azure→Graph/Bot) instead of Apex Graph polling. Set to false to revert to the original syncMessages polling path.</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Use Azure Chat Bridge</label>
+    <type>Checkbox</type>
+</CustomField>

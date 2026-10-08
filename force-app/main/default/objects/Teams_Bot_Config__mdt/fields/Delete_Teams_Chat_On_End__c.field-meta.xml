@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Delete_Teams_Chat_On_End__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description
+  >When true, End Chat soft-deletes the Teams chat via Graph after the transcript is saved to Swarm_Message__c. Requires Chat.ManageDeletion.All application consent on the MS_Graph app registration; without it the delete fails with 403 and is recorded on Case.Swarm_Chat_Delete_Error__c. Set to false to leave the chat in Teams (the original End Chat behaviour).</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Delete Teams Chat On End</label>
+    <type>Checkbox</type>
+</CustomField>

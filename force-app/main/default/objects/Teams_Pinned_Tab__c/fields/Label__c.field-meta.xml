@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Label__c</fullName>
+    <label>Label</label>
+    <type>Text</type>
+    <length>255</length>
+    <required>true</required>
+    <description>Cached plural label to show on the tab (e.g. "Opportunities"), captured from Global Describe at pin time - avoids an extra describe call on every page load just to render the tab's text.</description>
+</CustomField>

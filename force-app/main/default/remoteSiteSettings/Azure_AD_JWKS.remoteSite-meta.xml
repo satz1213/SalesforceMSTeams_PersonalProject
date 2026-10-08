@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RemoteSiteSetting xmlns="http://soap.sforce.com/2006/04/metadata">
+    <disableProtocolSecurity>false</disableProtocolSecurity>
+    <isActive>true</isActive>
+    <url>https://login.microsoftonline.com</url>
+    <description>Public JWKS endpoint Microsoft identity platform publishes its token-signing keys on (no auth) - see SalesforceInTeamsTokenExchangeHandler.fetchPublicKey(). Same pattern/reasoning as Bot_Framework_Keys, just a different issuer.</description>
+</RemoteSiteSetting>

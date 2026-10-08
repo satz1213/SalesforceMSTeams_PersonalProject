@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Scheduled_Call_Slot__c</fullName>
+    <label>Scheduled Call Slot</label>
+    <type>Text</type>
+    <length>255</length>
+    <description>Free-text time slot chosen alongside Scheduled_Expert__c (e.g. "Today, 2:00 PM - 2:30 PM CET") - matches Expert__c.Available_Slots__c's free-text convention. Not backed by a real calendar/meeting - see Scheduled_Expert__c's description and the plan's AI-agent-layer section for why real Graph Calendar booking is deliberately deferred.</description>
+</CustomField>

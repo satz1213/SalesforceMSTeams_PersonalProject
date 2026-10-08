@@ -1,0 +1,114 @@
+.widget-host {
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    z-index: 9000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.75rem;
+    pointer-events: none;
+}
+
+.widget-panel,
+.widget-launcher {
+    pointer-events: auto;
+}
+
+.widget-panel {
+    width: min(380px, calc(100vw - 2rem));
+    background: #ffffff;
+    border: 1px solid #c9c9c9;
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+}
+
+.widget-panel_open {
+    display: flex;
+}
+
+.widget-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 0.75rem;
+    background: #0176d3;
+    color: #ffffff;
+}
+
+.widget-title {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.widget-body {
+    padding: 0.75rem;
+    max-height: 70vh;
+    overflow: auto;
+    background: #fafaf9;
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+.widget-launcher {
+    position: relative;
+    width: 3.25rem;
+    height: 3.25rem;
+    border: none;
+    border-radius: 50%;
+    background: #0176d3;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(1, 118, 211, 0.45);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.widget-launcher:hover {
+    background: #014486;
+}
+
+.widget-launcher_unread {
+    background: #ba0517;
+    box-shadow: 0 0 0 0 rgba(186, 5, 23, 0.55);
+    animation: swarm-pulse 1.4s ease-out infinite;
+}
+
+.widget-launcher_unread:hover {
+    background: #8e030f;
+}
+
+.unread-badge {
+    position: absolute;
+    top: -0.15rem;
+    right: -0.15rem;
+    min-width: 1.15rem;
+    height: 1.15rem;
+    padding: 0 0.25rem;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #ba0517;
+    border: 2px solid #ba0517;
+    font-size: 0.65rem;
+    font-weight: 700;
+    line-height: 1.05rem;
+    text-align: center;
+}
+
+@keyframes swarm-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(186, 5, 23, 0.55);
+    }
+    70% {
+        box-shadow: 0 0 0 12px rgba(186, 5, 23, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(186, 5, 23, 0);
+    }
+}

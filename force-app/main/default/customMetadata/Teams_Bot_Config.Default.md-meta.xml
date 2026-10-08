@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+  xmlns="http://soap.sforce.com/2006/04/metadata"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>Default</label>
+    <protected>false</protected>
+    <values>
+        <field>Microsoft_App_Id__c</field>
+        <value
+      xsi:type="xsd:string"
+    >70b64ad6-1ab4-4f85-be54-1f9d3ab46a50</value>
+    </values>
+    <values>
+        <field>Teams_App_Catalog_Id__c</field>
+        <value
+      xsi:type="xsd:string"
+    >3bc2f354-bc07-4638-a0f5-2a52cf822a0e</value>
+    </values>
+    <values>
+        <field>Use_Azure_Chat_Bridge__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Use_Azure_SignalR__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Chat_Bridge_Azure_Base_Url__c</field>
+        <value
+      xsi:type="xsd:string"
+    >https://case-swarm-relay-sfchatsync-h9hbhzf9eagdbkd6.canadacentral-01.azurewebsites.net</value>
+    </values>
+    <values>
+        <field>Delete_Teams_Chat_On_End__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Chat_Bridge_HMAC_Secret__c</field>
+        <value xsi:nil="true" />
+    </values>
+</CustomMetadata>

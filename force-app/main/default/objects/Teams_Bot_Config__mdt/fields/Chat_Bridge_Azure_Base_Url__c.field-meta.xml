@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Chat_Bridge_Azure_Base_Url__c</fullName>
+    <description>Azure Functions app base URL for the chat bridge (no trailing slash), e.g. https://my-relay.azurewebsites.net. Used when Use Azure Chat Bridge is enabled.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Chat Bridge Azure Base Url</label>
+    <length>255</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

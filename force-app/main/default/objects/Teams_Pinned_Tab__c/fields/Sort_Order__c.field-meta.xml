@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sort_Order__c</fullName>
+    <label>Sort Order</label>
+    <type>Number</type>
+    <precision>18</precision>
+    <scale>0</scale>
+    <required>true</required>
+    <defaultValue>0</defaultValue>
+    <description>Where this pinned tab sits relative to the person's other pins (app-nav tabs always come first, then pins in ascending Sort_Order__c) - a new pin gets max(existing)+1 so pins keep the order they were added in.</description>
+</CustomField>

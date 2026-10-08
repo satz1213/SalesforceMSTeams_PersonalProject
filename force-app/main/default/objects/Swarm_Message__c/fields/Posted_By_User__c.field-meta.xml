@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Posted_By_User__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Salesforce user who sent this message from the Case chat panel (Outbound).</description>
+    <label>Posted By User</label>
+    <referenceTo>User</referenceTo>
+    <relationshipName>Swarm_Messages_Posted</relationshipName>
+    <required>false</required>
+    <type>Lookup</type>
+</CustomField>

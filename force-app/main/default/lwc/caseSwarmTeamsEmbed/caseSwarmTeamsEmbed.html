@@ -1,0 +1,39 @@
+<template>
+    <lightning-card title="Teams Conversation" icon-name="standard:live_chat">
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+            <template if:true={noSwarm}>
+                <p class="slds-text-body_regular slds-text-color_weak">
+                    No active swarm yet. Start one from the Case Swarm component on this page.
+                </p>
+            </template>
+
+            <template if:true={swarmProvisioning}>
+                <div class="slds-align_absolute-center slds-p-around_large">
+                    <lightning-spinner alternative-text="Provisioning" size="small"></lightning-spinner>
+                </div>
+                <p class="slds-text-body_small slds-text-align_center">
+                    Setting up your Team in Microsoft 365. You can open the conversation when status is Active.
+                </p>
+            </template>
+
+            <template if:true={swarmActive}>
+                <div class="slds-box slds-theme_shade">
+                    <p class="slds-text-body_regular slds-m-bottom_small">
+                        This case has an active Teams {swarmTypeLabel}.
+                    </p>
+                    <p class="slds-text-body_small slds-m-bottom_medium slds-text-color_weak">
+                        Microsoft does not allow embedding the Teams client in Salesforce. For Chat swarms,
+                        use the <strong>Case Swarm Chat</strong> panel on this page to converse from Salesforce.
+                        Or open the conversation in Teams.
+                    </p>
+                    <lightning-button
+                        variant="brand"
+                        label="Open in Teams"
+                        icon-name="utility:new_window"
+                        onclick={handleOpenTeams}
+                    ></lightning-button>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

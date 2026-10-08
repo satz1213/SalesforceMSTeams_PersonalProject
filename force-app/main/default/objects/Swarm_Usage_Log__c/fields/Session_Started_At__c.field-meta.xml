@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Session_Started_At__c</fullName>
+    <description>When the browser first started tracking usage for this swarm session (first poll/send/fallback observed), not necessarily when the swarm itself was created.</description>
+    <label>Session Started At</label>
+    <required>false</required>
+    <type>DateTime</type>
+</CustomField>

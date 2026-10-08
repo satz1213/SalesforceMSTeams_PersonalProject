@@ -1,0 +1,15 @@
+<template>
+    <lightning-card title="Case Swarm Chat" icon-name="standard:live_chat">
+        <lightning-button
+            slot="actions"
+            class="slds-m-right_xx-small"
+            label="End Chat"
+            title="Save Teams messages to the Case transcript"
+            icon-name="utility:check"
+            onclick={handleEndChat}
+        ></lightning-button>
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+            <c-case-swarm-chat-core record-id={recordId} hide-end-chat-button></c-case-swarm-chat-core>
+        </div>
+    </lightning-card>
+</template>

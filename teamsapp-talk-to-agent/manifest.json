@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.19/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.19",
+  "version": "1.0.0",
+  "id": "0ac1b02d-ef06-43bd-a291-16e58d95efc5",
+  "developer": {
+    "name": "REPLACE_WITH_YOUR_ORG_NAME",
+    "websiteUrl": "https://example.com",
+    "privacyUrl": "https://example.com/privacy",
+    "termsOfUseUrl": "https://example.com/terms"
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "name": {
+    "short": "Talk to an Agent",
+    "full": "Salesforce - Talk to an Agent"
+  },
+  "description": {
+    "short": "Start a chat with a Salesforce support agent.",
+    "full": "Opens a chat with a Salesforce support agent using Salesforce's standard Messaging for In-App and Web widget, without leaving Teams."
+  },
+  "accentColor": "#0070D2",
+  "staticTabs": [
+    {
+      "entityId": "talkToAgent",
+      "name": "Talk to an Agent",
+      "contentUrl": "https://case-swarm-relay-sfchatsync-h9hbhzf9eagdbkd6.canadacentral-01.azurewebsites.net/api/talkToAgentTab",
+      "websiteUrl": "https://case-swarm-relay-sfchatsync-h9hbhzf9eagdbkd6.canadacentral-01.azurewebsites.net/api/talkToAgentTab",
+      "scopes": ["personal"]
+    }
+  ],
+  "validDomains": [
+    "case-swarm-relay-sfchatsync-h9hbhzf9eagdbkd6.canadacentral-01.azurewebsites.net",
+    "mylightningapp-dev-dev-ed.my.site.com",
+    "mylightningapp-dev-dev-ed.my.salesforce-scrt.com"
+  ]
+}

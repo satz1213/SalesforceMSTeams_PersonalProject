@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Swarm_Chat_Id__c</fullName>
+    <description>Copy of Case.Swarm_Team_Id__c (the Teams chat/group id) at the time this swarm was cleared - kept for reference since the Case field itself gets nulled.</description>
+    <label>Swarm Chat Id</label>
+    <length>255</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

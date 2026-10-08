@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Azure_AD_Email_Id__c</fullName>
+    <description>The user's Microsoft 365 / Entra ID email (UPN), for reference alongside Azure_AD_Object_Id__c - useful when it differs from the Salesforce login email, since Graph identifies people by object id, not email.</description>
+    <externalId>false</externalId>
+    <label>Azure AD Email Id</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Email</type>
+    <unique>false</unique>
+</CustomField>

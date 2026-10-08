@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Bio__c</fullName>
+    <label>Bio</label>
+    <type>TextArea</type>
+    <description>Short free-text description of this expert's background - sent to the AI suggestion prompt as extra matching context alongside Topic__c.</description>
+</CustomField>

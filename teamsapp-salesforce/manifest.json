@@ -1,0 +1,42 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.19/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.19",
+  "version": "1.0.4",
+  "id": "3aed85f6-5208-454a-8c48-9ad5fbd14057",
+  "developer": {
+    "name": "Personal Company",
+    "websiteUrl": "https://example.com",
+    "privacyUrl": "https://example.com/privacy",
+    "termsOfUseUrl": "https://example.com/terms"
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "name": {
+    "short": "Salesforce Org",
+    "full": "Salesforce Org"
+  },
+  "description": {
+    "short": "See your Salesforce Cases without leaving Teams.",
+    "full": "First step toward a full Salesforce workspace inside Teams. Sign in with your own Microsoft identity to see your own Salesforce Cases."
+  },
+  "accentColor": "#0176D3",
+  "staticTabs": [
+    {
+      "entityId": "myCases",
+      "name": "Salesforce Org",
+      "contentUrl": "https://case-swarm-relay-sfchatsync-h9hbhzf9eagdbkd6.canadacentral-01.azurewebsites.net/api/salesforceTabHome",
+      "websiteUrl": "https://case-swarm-relay-sfchatsync-h9hbhzf9eagdbkd6.canadacentral-01.azurewebsites.net/api/salesforceTabHome",
+      "scopes": ["personal"]
+    }
+  ],
+  "validDomains": [
+    "case-swarm-relay-sfchatsync-h9hbhzf9eagdbkd6.canadacentral-01.azurewebsites.net",
+    "mylightningapp-dev-dev-ed.my.salesforce.com"
+  ],
+  "webApplicationInfo": {
+    "id": "b186fa34-7fdf-48be-80c3-7e736eb501b3",
+    "resource": "api://case-swarm-relay-sfchatsync-h9hbhzf9eagdbkd6.canadacentral-01.azurewebsites.net/b186fa34-7fdf-48be-80c3-7e736eb501b3"
+  }
+}

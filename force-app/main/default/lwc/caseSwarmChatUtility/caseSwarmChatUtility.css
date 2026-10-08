@@ -1,0 +1,83 @@
+.utility-shell {
+    min-height: 320px;
+    min-width: 280px;
+    background: #ffffff;
+    color: #181818;
+}
+
+.add-box {
+    padding: 0.75rem;
+}
+
+.swarm-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #e5e5e5;
+    border-radius: 0.25rem;
+    max-height: 420px;
+    overflow: auto;
+}
+
+.swarm-row {
+    border-bottom: 1px solid #f3f3f3;
+}
+
+.swarm-row:last-child {
+    border-bottom: none;
+}
+
+.swarm-row_unread {
+    background: #fff8e6;
+}
+
+.swarm-row-btn {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.5rem;
+    align-items: center;
+    width: 100%;
+    padding: 0.65rem 0.75rem;
+    margin: 0;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+}
+
+.swarm-row-btn:hover {
+    background: #f3f3f3;
+}
+
+.swarm-row_unread .swarm-row-btn:hover {
+    background: #ffefcc;
+}
+
+.swarm-case-number {
+    font-weight: 700;
+    color: #0b5cab;
+    white-space: nowrap;
+}
+
+.swarm-subject {
+    color: #706e6b;
+    font-size: 0.75rem;
+    min-width: 0;
+}
+
+.swarm-unread {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.35rem;
+    border-radius: 0.75rem;
+    background: #ba0517;
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1;
+}

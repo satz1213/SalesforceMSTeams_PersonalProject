@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Available_Slots__c</fullName>
+    <label>Available Slots</label>
+    <type>LongTextArea</type>
+    <length>32768</length>
+    <visibleLines>4</visibleLines>
+    <description>Free-text open meeting slots for this prototype (e.g. "Mon 10:00-10:30 AM ET; Wed 2:00-2:30 PM ET"). Deliberately not backed by a real calendar - real availability would need the Graph Calendars.Read application permission, which hasn't been granted (see the plan's AI-agent-layer section). The AI suggestion feature reads this as plain text and echoes a slot back, it doesn't parse/validate it as real time data.</description>
+</CustomField>

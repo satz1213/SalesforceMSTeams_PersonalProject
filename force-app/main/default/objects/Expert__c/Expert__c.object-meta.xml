@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Expert</label>
+    <pluralLabel>Experts</pluralLabel>
+    <nameField>
+        <label>Expert Name</label>
+        <type>Text</type>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>ReadWrite</sharingModel>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <description>Prototype-only data source for the "Schedule Expert Call" AI suggestion feature in the Salesforce-in-Teams record page: who's an expert in what, and their (free-text, not calendar-backed) available slots. Not the real expert-matching model discussed earlier (that would use Skill/SkillUser/Case_Skill__c, blocked on SkillUser being empty) - this is a deliberately simple, standalone object built specifically to unblock a working AI-suggestion demo now.</description>
+</CustomObject>

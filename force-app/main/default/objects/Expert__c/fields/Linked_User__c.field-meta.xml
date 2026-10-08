@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Linked_User__c</fullName>
+    <label>Linked User</label>
+    <type>Lookup</type>
+    <referenceTo>User</referenceTo>
+    <relationshipLabel>Experts</relationshipLabel>
+    <relationshipName>Experts</relationshipName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Optional - set only when this expert is a real internal Salesforce/Teams User, so a future real scheduling step could resolve their Azure_AD_Email_Id__c (this org's existing Teams identity-bridging convention, see CLAUDE.md) instead of just the plain Email__c above. Left blank for the prototype's fictitious seed experts.</description>
+</CustomField>

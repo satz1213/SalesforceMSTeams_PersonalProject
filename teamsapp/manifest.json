@@ -1,0 +1,49 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.19/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.19",
+  "version": "1.0.1",
+  "id": "eb3d87b4-15ab-4268-8a5e-0a25650ff8e7",
+  "developer": {
+    "name": "REPLACE_WITH_YOUR_ORG_NAME",
+    "websiteUrl": "https://example.com",
+    "privacyUrl": "https://example.com/privacy",
+    "termsOfUseUrl": "https://example.com/terms"
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "name": {
+    "short": "Case Swarm",
+    "full": "Salesforce Case Swarm Bot"
+  },
+  "description": {
+    "short": "Posts an editable case card into swarm chats.",
+    "full": "Posts a Salesforce case summary card into a swarm chat and lets participants edit Status, Priority, Owner, Subject, and Description inline via Adaptive Card actions, without leaving Teams."
+  },
+  "accentColor": "#0070D2",
+  "bots": [
+    {
+      "botId": "70b64ad6-1ab4-4f85-be54-1f9d3ab46a50",
+      "scopes": ["groupChat"],
+      "supportsFiles": false,
+      "isNotificationOnly": false
+    }
+  ],
+  "webApplicationInfo": {
+    "id": "70b64ad6-1ab4-4f85-be54-1f9d3ab46a50",
+    "resource": "https://Api"
+  },
+  "authorization": {
+    "permissions": {
+      "resourceSpecific": [
+        {
+          "name": "ChatMessage.Read.Chat",
+          "type": "Application"
+        }
+      ]
+    }
+  },
+  "permissions": ["identity", "messageTeamMembers"],
+  "validDomains": []
+}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Messaging_Session__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>MessagingSession this swarm message belongs to, for Case-less Messaging chat transcripts (mutually exclusive with Case__c).</description>
+    <label>Messaging Session</label>
+    <referenceTo>MessagingSession</referenceTo>
+    <relationshipLabel>Swarm Messages</relationshipLabel>
+    <relationshipName>Swarm_Messages</relationshipName>
+    <required>false</required>
+    <type>Lookup</type>
+</CustomField>

@@ -1,0 +1,94 @@
+<template>
+    <lightning-card title="Teams Chat" icon-name="standard:live_chat">
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+            <template if:true={chatPending}>
+                <template if:false={waitTimedOut}>
+                    <div class="slds-align_absolute-center slds-p-around_small">
+                        <lightning-spinner alternative-text="Setting up Teams chat" size="x-small"></lightning-spinner>
+                    </div>
+                    <p class="slds-text-body_small slds-text-align_center slds-text-color_weak">
+                        Setting up a Teams chat with this customer...
+                    </p>
+                </template>
+                <template if:true={waitTimedOut}>
+                    <p class="slds-text-body_small slds-text-align_center slds-text-color_weak slds-p-bottom_x-small">
+                        This is taking longer than expected.
+                    </p>
+                    <div class="slds-align_absolute-center">
+                        <lightning-button label="Refresh" icon-name="utility:refresh" onclick={handleManualRefresh}></lightning-button>
+                    </div>
+                </template>
+            </template>
+
+            <template if:true={chatEnded}>
+                <p class="slds-text-body_small slds-text-align_center slds-text-color_weak slds-p-around_small">
+                    This Teams chat has ended. The conversation was saved.
+                </p>
+            </template>
+
+            <template if:true={chatExists}>
+                <div class="toolbar">
+                    <lightning-button
+                        class="slds-m-right_xx-small"
+                        label="Open in Teams"
+                        icon-name="utility:new_window"
+                        onclick={handleOpenTeams}
+                    ></lightning-button>
+                    <lightning-button
+                        label="End Chat"
+                        icon-name="utility:check"
+                        disabled={isEndChatDisabled}
+                        onclick={handleEndChat}
+                    ></lightning-button>
+                </div>
+
+                <template if:false={liveReady}>
+                    <div class="slds-align_absolute-center slds-p-around_small">
+                        <lightning-spinner alternative-text="Connecting" size="x-small"></lightning-spinner>
+                    </div>
+                    <p class="slds-text-body_small slds-text-align_center slds-text-color_weak">
+                        Connecting to the live chat...
+                    </p>
+                </template>
+
+                <template if:true={liveReady}>
+                    <template if:true={liveError}>
+                        <p class="slds-text-body_small slds-text-color_error slds-m-vertical_x-small">{liveError}</p>
+                    </template>
+
+                    <div class="chat-pane" data-id="chat-pane">
+                        <template if:false={hasMessages}>
+                            <p class="slds-text-body_small slds-text-color_weak slds-p-around_small">
+                                No messages yet. Send one below.
+                            </p>
+                        </template>
+                        <template for:each={formattedMessages} for:item="msg">
+                            <div key={msg.key} class={msg.rowClass}>
+                                <div class={msg.bubbleClass}>
+                                    <div class="bubble-meta">{msg.metaLabel}</div>
+                                    <p class="bubble-body">{msg.body}</p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="composer slds-m-top_small">
+                        <lightning-textarea
+                            label="Message"
+                            variant="label-hidden"
+                            placeholder="Type a message..."
+                            value={draft}
+                            disabled={isComposerDisabled}
+                            onchange={handleDraftChange}
+                            onkeydown={handleComposerKeydown}
+                            max-length="4000"
+                        ></lightning-textarea>
+                        <div class="slds-m-top_x-small slds-grid slds-grid_align-end">
+                            <lightning-button variant="brand" label="Send" disabled={isSendDisabled} onclick={handleSend}></lightning-button>
+                        </div>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>

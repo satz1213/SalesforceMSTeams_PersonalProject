@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExternalClientApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>bhv4sathish@gmail.com</contactEmail>
+    <description>Public-client PKCE OAuth app for the &quot;Salesforce in Teams&quot; personal tab&apos;s per-user UI API access.</description>
+    <distributionState>Local</distributionState>
+    <isProtected>false</isProtected>
+    <label>Salesforce_In_Teams</label>
+    <orgScopedExternalApp>00D2v000001e1KA:Salesforce_In_Teams</orgScopedExternalApp>
+</ExternalClientApplication>

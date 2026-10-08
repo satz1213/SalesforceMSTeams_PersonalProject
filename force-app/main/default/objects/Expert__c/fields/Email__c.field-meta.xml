@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Email__c</fullName>
+    <label>Email</label>
+    <type>Email</type>
+    <description>Contact email for this expert - independent of Linked_User__c, since not every seeded expert in this prototype is a real Salesforce User.</description>
+</CustomField>

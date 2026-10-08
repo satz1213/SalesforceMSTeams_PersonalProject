@@ -1,0 +1,184 @@
+<template>
+  <lightning-card title="Case Swarm" icon-name="standard:groups">
+    <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+      <template if:true={swarmStatus}>
+        <p class="slds-text-body_regular slds-m-bottom_small">
+          Swarm status: <strong>{swarmStatus}</strong>
+        </p>
+
+        <template if:true={swarmActive}>
+          <lightning-button
+            class="slds-m-bottom_medium"
+            variant="brand"
+            label="Open in Teams"
+            icon-name="utility:new_window"
+            onclick={handleOpenTeams}
+          ></lightning-button>
+
+          <template if:true={showEndChatButton}>
+            <lightning-button
+              class="slds-m-bottom_medium slds-m-left_x-small"
+              label="End Chat"
+              title="Save Teams messages to the Case transcript"
+              icon-name="utility:check"
+              disabled={isEndChatDisabled}
+              onclick={handleEndChat}
+            ></lightning-button>
+          </template>
+        </template>
+
+        <template if:true={swarmProvisioning}>
+          <lightning-spinner
+            alternative-text="Provisioning"
+            size="small"
+          ></lightning-spinner>
+          <p class="slds-text-body_small slds-m-top_x-small">
+            Setting up your Team in Microsoft 365 - this can take up to a couple
+            of minutes.
+          </p>
+        </template>
+
+        <template if:true={swarmFailed}>
+          <p class="slds-text-color_error">
+            We couldn't finish setting up the Team. Check with your Salesforce
+            admin.
+          </p>
+        </template>
+
+        <template if:true={showResetButton}>
+          <lightning-button
+            class="slds-m-bottom_medium slds-m-left_x-small"
+            variant="destructive-text"
+            label="Clear swarm data"
+            icon-name="utility:clear"
+            disabled={isResetting}
+            onclick={handleResetSwarm}
+          ></lightning-button>
+        </template>
+      </template>
+
+      <template if:true={swarmActive}>
+        <h3 class="slds-text-title_bold slds-m-bottom_x-small">
+          Current swarm members
+        </h3>
+        <template if:true={isLoadingMembers}>
+          <lightning-spinner
+            alternative-text="Loading members"
+            size="small"
+          ></lightning-spinner>
+        </template>
+        <template if:true={hasCurrentMembers}>
+          <ul class="slds-has-dividers_top-space slds-m-bottom_medium">
+            <template for:each={currentMembers} for:item="member">
+              <li
+                key={member.removalId}
+                class="slds-item slds-p-vertical_x-small"
+              >
+                <div
+                  class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center"
+                >
+                  <span>
+                    {member.displayName} ({member.email})
+                    <template if:true={member.isOwner}> - owner</template>
+                  </span>
+                  <lightning-button-icon
+                    icon-name="utility:close"
+                    alternative-text="Remove from swarm"
+                    disabled={member.isOwner}
+                    data-id={member.removalId}
+                    onclick={handleRemoveSwarmMember}
+                  ></lightning-button-icon>
+                </div>
+              </li>
+            </template>
+          </ul>
+        </template>
+      </template>
+
+      <template if:true={showMemberPicker}>
+        <template if:true={swarmActive}>
+          <h3 class="slds-text-title_bold slds-m-bottom_x-small">
+            Add more experts
+          </h3>
+        </template>
+
+        <template if:true={isNewSwarm}>
+          <lightning-radio-group
+            name="swarmType"
+            label="Swarm type"
+            options={swarmTypeOptions}
+            value={swarmType}
+            type="radio"
+            class="slds-m-bottom_small"
+            onchange={handleSwarmTypeChange}
+          ></lightning-radio-group>
+        </template>
+
+        <lightning-input
+          type="search"
+          label="Search subject-matter experts"
+          placeholder="Search by name or email"
+          onchange={handleSearchTermChange}
+        ></lightning-input>
+
+        <template if:true={isSearching}>
+          <lightning-spinner
+            alternative-text="Searching"
+            size="small"
+          ></lightning-spinner>
+        </template>
+
+        <template if:true={hasSearchResults}>
+          <ul class="slds-has-dividers_top-space slds-m-top_x-small">
+            <template for:each={searchResults} for:item="user">
+              <li key={user.userId} class="slds-item slds-p-vertical_x-small">
+                <div
+                  class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center"
+                >
+                  <span>{user.name} ({user.email})</span>
+                  <lightning-button-icon
+                    icon-name="utility:add"
+                    alternative-text="Add"
+                    data-id={user.userId}
+                    onclick={handleAddMember}
+                  ></lightning-button-icon>
+                </div>
+              </li>
+            </template>
+          </ul>
+        </template>
+
+        <template if:true={hasSelectedMembers}>
+          <h3 class="slds-text-title_bold slds-m-top_medium">
+            Selected experts
+          </h3>
+          <ul class="slds-has-dividers_top-space">
+            <template for:each={selectedMembers} for:item="user">
+              <li key={user.userId} class="slds-item slds-p-vertical_x-small">
+                <div
+                  class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center"
+                >
+                  <span>{user.name} ({user.email})</span>
+                  <lightning-button-icon
+                    icon-name="utility:close"
+                    alternative-text="Remove"
+                    data-id={user.userId}
+                    onclick={handleRemoveMember}
+                  ></lightning-button-icon>
+                </div>
+              </li>
+            </template>
+          </ul>
+        </template>
+
+        <lightning-button
+          class="slds-m-top_medium"
+          variant="brand"
+          label={submitButtonLabel}
+          disabled={isSubmitDisabled}
+          onclick={handleSubmit}
+        ></lightning-button>
+      </template>
+    </div>
+  </lightning-card>
+</template>

@@ -1,0 +1,52 @@
+<template>
+    <div class="widget-host">
+        <section class={panelClass} aria-label="Case Swarm Chat" aria-hidden={panelAriaHidden}>
+            <header class="widget-header">
+                <div class="widget-title">
+                    <lightning-icon icon-name="standard:live_chat" size="small" alternative-text="Chat"></lightning-icon>
+                    <span class="slds-m-left_x-small">Swarm Chatbot</span>
+                </div>
+                <div class="widget-header-actions">
+                    <lightning-button-icon
+                        icon-name="utility:check"
+                        alternative-text="End Chat"
+                        title="Save Teams messages to the Case transcript"
+                        variant="bare-inverse"
+                        class="slds-m-right_xx-small"
+                        onclick={handleEndChat}
+                    ></lightning-button-icon>
+                    <lightning-button-icon
+                        icon-name="utility:dash"
+                        alternative-text="Minimize"
+                        title="Minimize"
+                        variant="bare-inverse"
+                        onclick={handleMinimize}
+                    ></lightning-button-icon>
+                </div>
+            </header>
+            <div class="widget-body">
+                <c-case-swarm-chat-core
+                    record-id={recordId}
+                    compact
+                    hide-intro
+                    hide-until-ready
+                    hide-end-chat-button
+                    onchatenabled={handleChatEnabled}
+                    oninboundmessage={handleInboundMessage}
+                ></c-case-swarm-chat-core>
+            </div>
+        </section>
+
+        <button class={launcherClass} type="button" title={launcherLabel} onclick={handleToggle}>
+            <lightning-icon
+                icon-name={launcherIcon}
+                size="small"
+                alternative-text={launcherLabel}
+                variant="inverse"
+            ></lightning-icon>
+            <template if:true={showUnreadBadge}>
+                <span class="unread-badge" aria-label={launcherLabel}>{unreadBadgeLabel}</span>
+            </template>
+        </button>
+    </div>
+</template>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Topic__c</fullName>
+    <label>Topic</label>
+    <type>Text</type>
+    <length>255</length>
+    <description>Comma-separated areas of expertise (e.g. "Finance, Billing, Invoicing"). The AI expert-suggestion feature sends this plus Bio__c as free-text candidate context - it's compared against the case's subject/description, not matched via a structured picklist.</description>
+</CustomField>

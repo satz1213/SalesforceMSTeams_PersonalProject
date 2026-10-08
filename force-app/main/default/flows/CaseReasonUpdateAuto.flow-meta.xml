@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Autolaunched (headless) twin of the CaseReasonUpdate Screen Flow. That flow's own entire logic -
+  confirmed by reading its full metadata - is exactly one thing: set Case.Reason__c to whatever was
+  picked. This flow does the same single record update, but with no <screens> element, so it's
+  reachable via the Invocable Actions REST API (/services/data/vNN/actions/custom/flow/
+  CaseReasonUpdateAuto) - Screen Flows are not exposed that way at all (confirmed live: querying
+  that endpoint never lists CaseReasonUpdate, only Autolaunched/headless flows appear there).
+
+  This lets the "Salesforce in Teams" record page (salesforceTabRecord.js's "Update Reason" button)
+  call the SAME centralized Salesforce logic an admin can still edit declaratively in Flow Builder,
+  instead of that logic living only in the Teams page's own JavaScript. The Screen Flow
+  (CaseReasonUpdate) is untouched and still backs the existing Salesforce UI action button - this is
+  a second, parallel entry point to the same update, not a replacement for it.
+-->
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <environments>Default</environments>
+    <interviewLabel>CaseReasonUpdateAuto {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>CaseReasonUpdateAuto</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>updateCase</name>
+        <label>updateCase</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Reason__c</field>
+            <value>
+                <elementReference>reason</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Case</object>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>updateCase</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>reason</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>
