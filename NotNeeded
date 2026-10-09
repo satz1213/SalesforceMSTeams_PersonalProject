@@ -1,403 +1,330 @@
-import { LightningElement, api, wire } from "lwc";
-import {
-  getRecord,
-  getFieldValue,
-  notifyRecordUpdateAvailable
-} from "lightning/uiRecordApi";
-import { refreshApex } from "@salesforce/apex";
-import { ShowToastEvent } from "lightning/platformShowToastEvent";
-import LightningConfirm from "lightning/confirm";
-import searchUsers from "@salesforce/apex/TeamsSwarmController.searchUsers";
-import startSwarm from "@salesforce/apex/TeamsSwarmController.startSwarm";
-import addMembersToSwarm from "@salesforce/apex/TeamsSwarmController.addMembersToSwarm";
-import resetSwarm from "@salesforce/apex/TeamsSwarmController.resetSwarm";
-import getSwarmMembers from "@salesforce/apex/TeamsSwarmController.getSwarmMembers";
-import removeMemberFromSwarm from "@salesforce/apex/TeamsSwarmController.removeMemberFromSwarm";
-import endChat from "@salesforce/apex/TeamsSwarmChatController.endChat";
-
-import CASE_SWARM_TEAM_URL from "@salesforce/schema/Case.Swarm_Team_Url__c";
-import CASE_SWARM_STATUS from "@salesforce/schema/Case.Swarm_Status__c";
-import CASE_SWARM_TYPE from "@salesforce/schema/Case.Swarm_Type__c";
-
-const CASE_FIELDS = [CASE_SWARM_TEAM_URL, CASE_SWARM_STATUS, CASE_SWARM_TYPE];
-const MIN_SEARCH_LENGTH = 2;
-const POLL_INTERVAL_MS = 5000;
-
-export default class CaseSwarm extends LightningElement {
-  @api recordId;
-
-  searchResults = [];
-  selectedMembers = [];
-  currentMembers = [];
-  isSearching = false;
-  isSubmitting = false;
-  isResetting = false;
-  isEndingChat = false;
-  isLoadingMembers = false;
-  swarmType = "Team";
-
-  wiredCaseRecord;
-  pollIntervalId;
-  membersLoaded = false;
-
-  @wire(getRecord, { recordId: "$recordId", fields: CASE_FIELDS })
-  wiredCase(value) {
-    this.wiredCaseRecord = value;
-    if (value.data) {
-      this.syncPolling();
-      if (this.swarmActive && !this.membersLoaded) {
-        this.loadSwarmMembers();
-      }
-    }
-  }
-
-  disconnectedCallback() {
-    this.stopPolling();
-  }
-
-  get teamUrl() {
-    return getFieldValue(this.wiredCaseRecord?.data, CASE_SWARM_TEAM_URL);
-  }
-
-  get swarmStatus() {
-    return getFieldValue(this.wiredCaseRecord?.data, CASE_SWARM_STATUS);
-  }
-
-  get persistedSwarmType() {
-    return getFieldValue(this.wiredCaseRecord?.data, CASE_SWARM_TYPE);
-  }
-
-  get isChatSwarm() {
-    return this.persistedSwarmType === "Chat";
-  }
-
-  get swarmActive() {
-    return this.swarmStatus === "Active";
-  }
-
-  get swarmProvisioning() {
-    return this.swarmStatus === "Provisioning";
-  }
-
-  get swarmFailed() {
-    return this.swarmStatus === "Failed";
-  }
-
-  get isNewSwarm() {
-    return !this.swarmStatus;
-  }
-
-  get showResetButton() {
-    return !this.isNewSwarm;
-  }
-
-  get showEndChatButton() {
-    return this.swarmActive && this.isChatSwarm;
-  }
-
-  get isEndChatDisabled() {
-    return this.isEndingChat;
-  }
-
-  get showMemberPicker() {
-    return this.isNewSwarm || this.swarmActive;
-  }
-
-  get submitButtonLabel() {
-    return this.isNewSwarm ? "Start swarm" : "Add to swarm";
-  }
-
-  get selectedMemberIds() {
-    return this.selectedMembers.map((m) => m.userId);
-  }
-
-  get isSubmitDisabled() {
-    return this.isSubmitting || this.selectedMembers.length === 0;
-  }
-
-  get hasSearchResults() {
-    return this.searchResults.length > 0;
-  }
-
-  get hasSelectedMembers() {
-    return this.selectedMembers.length > 0;
-  }
-
-  get hasCurrentMembers() {
-    return this.currentMembers.length > 0;
-  }
-
-  get swarmTypeOptions() {
-    return [
-      { label: "Quick chat", value: "Chat" },
-      { label: "Full Team", value: "Team" }
-    ];
-  }
-
-  syncPolling() {
-    if (this.swarmProvisioning && !this.pollIntervalId) {
-      this.pollIntervalId = setInterval(() => {
-        refreshApex(this.wiredCaseRecord);
-      }, POLL_INTERVAL_MS);
-    } else if (!this.swarmProvisioning) {
-      this.stopPolling();
-    }
-  }
-
-  stopPolling() {
-    if (this.pollIntervalId) {
-      clearInterval(this.pollIntervalId);
-      this.pollIntervalId = undefined;
-    }
-  }
-
-  handleSearchTermChange(event) {
-    const term = event.target.value;
-    if (!term || term.length < MIN_SEARCH_LENGTH) {
-      this.searchResults = [];
-      return;
+/**
+ * LWC-facing entry points for the Case Swarm component.
+ */
+public with sharing class TeamsSwarmController {
+    public class UserOption {
+        @AuraEnabled
+        public Id userId;
+        @AuraEnabled
+        public String name;
+        @AuraEnabled
+        public String email;
     }
 
-    this.isSearching = true;
-    searchUsers({ searchTerm: term })
-      .then((results) => {
-        const selectedIds = new Set(this.selectedMemberIds);
-        this.searchResults = results.filter((r) => !selectedIds.has(r.userId));
-      })
-      .catch((error) => {
-        this.showError("Search failed", error);
-      })
-      .finally(() => {
-        this.isSearching = false;
-      });
-  }
-
-  handleAddMember(event) {
-    const userId = event.currentTarget.dataset.id;
-    const user = this.searchResults.find((r) => r.userId === userId);
-    if (user) {
-      this.selectedMembers = [...this.selectedMembers, user];
-      this.searchResults = this.searchResults.filter(
-        (r) => r.userId !== userId
-      );
+    public class StartSwarmResult {
+        @AuraEnabled
+        public String teamId;
+        @AuraEnabled
+        public String groupId;
+        @AuraEnabled
+        public String webUrl;
     }
-  }
 
-  handleRemoveMember(event) {
-    const userId = event.currentTarget.dataset.id;
-    this.selectedMembers = this.selectedMembers.filter(
-      (m) => m.userId !== userId
-    );
-  }
+    @AuraEnabled(cacheable=true)
+    public static List<UserOption> searchUsers(String searchTerm) {
+        String term = '%' + String.escapeSingleQuotes(searchTerm) + '%';
 
-  handleSwarmTypeChange(event) {
-    this.swarmType = event.detail.value;
-  }
+        List<User> users = [
+            SELECT Id, Name, Email
+            FROM User
+            WHERE IsActive = true
+            AND Azure_AD_Email_Id__c != null
+            AND (Name LIKE :term OR Email LIKE :term)
+            WITH USER_MODE
+            ORDER BY Name
+            LIMIT 25
+        ];
 
-  handleSubmit() {
-    if (this.isNewSwarm) {
-      this.startNewSwarm();
-    } else {
-      this.addMembersToActiveSwarm();
+        List<UserOption> options = new List<UserOption>();
+        for (User u : users) {
+            UserOption opt = new UserOption();
+            opt.userId = u.Id;
+            opt.name = u.Name;
+            opt.email = u.Email;
+            options.add(opt);
+        }
+        return options;
     }
-  }
 
-  startNewSwarm() {
-    this.isSubmitting = true;
-    const startedType = this.swarmType;
-    startSwarm({
-      caseId: this.recordId,
-      memberUserIds: this.selectedMemberIds,
-      swarmType: startedType
-    })
-      .then(async () => {
-        const message =
-          startedType === "Chat"
-            ? "Chat created in Microsoft Teams."
-            : "Provisioning your team in Microsoft Teams - this can take a couple of minutes.";
-        this.dispatchEvent(
-          new ShowToastEvent({
-            title: "Swarm started",
-            message,
-            variant: "success"
-          })
+    @AuraEnabled
+    public static StartSwarmResult startSwarm(Id caseId, List<Id> memberUserIds, String swarmType) {
+        if (swarmType != 'Team' && swarmType != 'Chat') {
+            throw new AuraHandledException('swarmType must be either "Team" or "Chat".');
+        }
+
+        Case matchingCase = [
+            SELECT Id, CaseNumber, Subject, Swarm_Team_Id__c
+            FROM Case
+            WHERE Id = :caseId
+            WITH USER_MODE
+            LIMIT 1
+        ];
+
+        if (String.isNotBlank(matchingCase.Swarm_Team_Id__c)) {
+            throw new AuraHandledException('This case already has an active swarm.');
+        }
+
+        Set<Id> userIds = new Set<Id>(memberUserIds);
+        userIds.add(UserInfo.getUserId());
+
+        List<User> members = [
+            SELECT Id, Azure_AD_Email_Id__c
+            FROM User
+            WHERE Id IN :userIds
+            AND Azure_AD_Email_Id__c != null
+            WITH USER_MODE
+        ];
+
+        if (members.isEmpty()) {
+            throw new AuraHandledException('None of the selected users have an Azure AD Email Id populated.');
+        }
+
+        String ownerIdentifier;
+        List<String> memberIdentifiers = new List<String>();
+        for (User u : members) {
+            memberIdentifiers.add(u.Azure_AD_Email_Id__c);
+            if (u.Id == UserInfo.getUserId()) {
+                ownerIdentifier = u.Azure_AD_Email_Id__c;
+            }
+        }
+
+        if (ownerIdentifier == null) {
+            throw new AuraHandledException('Your own user record needs an Azure AD Email Id populated before you can start a swarm.');
+        }
+
+        return swarmType == 'Chat'
+            ? startChatSwarm(matchingCase, ownerIdentifier, memberIdentifiers)
+            : startTeamSwarm(matchingCase, ownerIdentifier, memberIdentifiers);
+    }
+
+    private static StartSwarmResult startTeamSwarm(Case matchingCase, String ownerIdentifier, List<String> memberIdentifiers) {
+        String groupId;
+        try {
+            groupId = TeamsSwarmService.createGroup(matchingCase.CaseNumber, matchingCase.Subject, ownerIdentifier);
+        } catch (TeamsSwarmService.TeamsSwarmException e) {
+            throw new AuraHandledException('Could not start swarm: ' + e.getMessage());
+        }
+
+        String webUrl = TeamsSwarmService.webUrlFor(groupId);
+
+        matchingCase.Swarm_Team_Id__c = groupId;
+        matchingCase.Swarm_Group_Id__c = groupId;
+        matchingCase.Swarm_Team_Url__c = webUrl;
+        matchingCase.Swarm_Status__c = 'Provisioning';
+        matchingCase.Swarm_Type__c = 'Team';
+        saveCase(matchingCase);
+
+        TeamsSwarmProvisionScheduler.scheduleFirstAttempt(matchingCase.Id, groupId, memberIdentifiers);
+
+        StartSwarmResult result = new StartSwarmResult();
+        result.teamId = groupId;
+        result.groupId = groupId;
+        result.webUrl = webUrl;
+        return result;
+    }
+
+    private static StartSwarmResult startChatSwarm(Case matchingCase, String ownerIdentifier, List<String> memberIdentifiers) {
+        TeamsSwarmService.ChatResult chatResult;
+        try {
+            chatResult = TeamsSwarmService.createChat(matchingCase.CaseNumber, matchingCase.Subject, ownerIdentifier, memberIdentifiers);
+        } catch (TeamsSwarmService.TeamsSwarmException e) {
+            throw new AuraHandledException('Could not start swarm: ' + e.getMessage());
+        }
+
+        matchingCase.Swarm_Team_Id__c = chatResult.chatId;
+        matchingCase.Swarm_Team_Url__c = chatResult.webUrl;
+        matchingCase.Swarm_Status__c = 'Active';
+        matchingCase.Swarm_Type__c = 'Chat';
+        saveCase(matchingCase);
+
+        StartSwarmResult result = new StartSwarmResult();
+        result.teamId = chatResult.chatId;
+        result.groupId = null;
+        result.webUrl = chatResult.webUrl;
+        return result;
+    }
+
+    private static void saveCase(Case matchingCase) {
+        try {
+            update matchingCase;
+        } catch (DmlException e) {
+            throw new AuraHandledException('Swarm was created in Microsoft 365, but the Case could not be updated: ' + e.getMessage());
+        }
+    }
+
+    public class UsageSummary {
+        @AuraEnabled
+        public Integer historyPollCount;
+        @AuraEnabled
+        public Integer sendCount;
+        @AuraEnabled
+        public Integer rateLimitedCount;
+        @AuraEnabled
+        public Integer apexFallbackCount;
+        @AuraEnabled
+        public String sessionStartedAt;
+    }
+
+    /**
+     * Dev/testing utility: clears all swarm tracking on the Case (fields + chat transcript) so a
+     * fresh swarm can be started. Does NOT touch the underlying Microsoft 365 Team/Group/Chat -
+     * that keeps existing in Teams untouched; this only clears what Salesforce knows about it.
+     */
+    @AuraEnabled
+    public static void resetSwarm(Id caseId, UsageSummary usage) {
+        Case matchingCase = [
+            SELECT Id, Swarm_Team_Id__c, Swarm_Type__c
+            FROM Case
+            WHERE Id = :caseId
+            WITH USER_MODE
+            LIMIT 1
+        ];
+
+        if (String.isBlank(matchingCase.Swarm_Team_Id__c)) {
+            throw new AuraHandledException('This case has no swarm to clear.');
+        }
+
+        logUsage(caseId, matchingCase, usage);
+
+        delete [SELECT Id FROM Swarm_Message__c WHERE Case__c = :caseId];
+
+        matchingCase.Swarm_Team_Id__c = null;
+        matchingCase.Swarm_Group_Id__c = null;
+        matchingCase.Swarm_Team_Url__c = null;
+        matchingCase.Swarm_Status__c = null;
+        matchingCase.Swarm_Type__c = null;
+
+        try {
+            update matchingCase;
+        } catch (DmlException e) {
+            throw new AuraHandledException('Could not clear swarm fields: ' + e.getMessage());
+        }
+    }
+
+    /** Best-effort - a logging failure should never block the actual reset. */
+    private static void logUsage(Id caseId, Case matchingCase, UsageSummary usage) {
+        if (usage == null) {
+            return;
+        }
+        Swarm_Usage_Log__c log = new Swarm_Usage_Log__c(
+            Case__c = caseId,
+            Swarm_Type__c = matchingCase.Swarm_Type__c,
+            Swarm_Chat_Id__c = matchingCase.Swarm_Team_Id__c,
+            History_Poll_Count__c = usage.historyPollCount,
+            Send_Count__c = usage.sendCount,
+            Rate_Limited_Count__c = usage.rateLimitedCount,
+            Apex_Fallback_Count__c = usage.apexFallbackCount
         );
-        this.selectedMembers = [];
-        await refreshApex(this.wiredCaseRecord);
-        await notifyRecordUpdateAvailable([{ recordId: this.recordId }]);
-      })
-      .catch((error) => {
-        this.showError("Could not start swarm", error);
-      })
-      .finally(() => {
-        this.isSubmitting = false;
-      });
-  }
-
-  addMembersToActiveSwarm() {
-    this.isSubmitting = true;
-    addMembersToSwarm({
-      caseId: this.recordId,
-      memberUserIds: this.selectedMemberIds
-    })
-      .then(() => {
-        this.dispatchEvent(
-          new ShowToastEvent({
-            title: "Members added",
-            message: "Selected experts have been added to the Team.",
-            variant: "success"
-          })
-        );
-        this.selectedMembers = [];
-        this.loadSwarmMembers();
-      })
-      .catch((error) => {
-        this.showError("Could not add members", error);
-      })
-      .finally(() => {
-        this.isSubmitting = false;
-      });
-  }
-
-  loadSwarmMembers() {
-    this.membersLoaded = true;
-    this.isLoadingMembers = true;
-    getSwarmMembers({ caseId: this.recordId })
-      .then((members) => {
-        this.currentMembers = members || [];
-      })
-      .catch((error) => {
-        this.currentMembers = [];
-        this.showError("Could not load current swarm members", error);
-      })
-      .finally(() => {
-        this.isLoadingMembers = false;
-      });
-  }
-
-  async handleRemoveSwarmMember(event) {
-    const removalId = event.currentTarget.dataset.id;
-    const member = this.currentMembers.find((m) => m.removalId === removalId);
-    const confirmed = await LightningConfirm.open({
-      label: "Remove from swarm?",
-      message: `Remove ${member?.displayName || "this person"} from this swarm in Microsoft Teams? They'll lose access immediately.`,
-      variant: "destructive",
-      theme: "warning"
-    });
-    if (!confirmed) {
-      return;
+        if (String.isNotBlank(usage.sessionStartedAt)) {
+            try {
+                log.Session_Started_At__c = (Datetime) JSON.deserialize('"' + usage.sessionStartedAt + '"', Datetime.class);
+            } catch (Exception e) {
+                // Malformed timestamp from the client - log everything else anyway.
+            }
+        }
+        try {
+            insert log;
+        } catch (DmlException e) {
+            System.debug(LoggingLevel.WARN, 'Could not insert Swarm_Usage_Log__c: ' + e.getMessage());
+        }
     }
 
-    removeMemberFromSwarm({ caseId: this.recordId, removalId })
-      .then(() => {
-        this.currentMembers = this.currentMembers.filter(
-          (m) => m.removalId !== removalId
-        );
-        this.dispatchEvent(
-          new ShowToastEvent({
-            title: "Member removed",
-            message: "They no longer have access to this swarm in Teams.",
-            variant: "success"
-          })
-        );
-      })
-      .catch((error) => {
-        this.showError("Could not remove member", error);
-      });
-  }
+    @AuraEnabled
+    public static void addMembersToSwarm(Id caseId, List<Id> memberUserIds) {
+        Case matchingCase = [
+            SELECT Id, Swarm_Team_Id__c, Swarm_Group_Id__c, Swarm_Status__c, Swarm_Type__c
+            FROM Case
+            WHERE Id = :caseId
+            WITH USER_MODE
+            LIMIT 1
+        ];
 
-  handleOpenTeams() {
-    window.open(this.teamUrl, "_blank", "noopener,noreferrer");
-  }
+        if (matchingCase.Swarm_Status__c != 'Active' || String.isBlank(matchingCase.Swarm_Team_Id__c)) {
+            throw new AuraHandledException('This case does not have an active swarm to add members to.');
+        }
 
-  async handleResetSwarm() {
-    const confirmed = await LightningConfirm.open({
-      label: "Clear swarm data?",
-      message:
-        "This clears the swarm fields and chat transcript on this Case in Salesforce only. " +
-        "It does NOT delete the Team or chat in Microsoft Teams - that keeps existing there untouched. " +
-        "Use this to let a fresh swarm be started from Salesforce. This cannot be undone.",
-      variant: "destructive",
-      theme: "warning"
-    });
-    if (!confirmed) {
-      return;
+        List<User> members = [
+            SELECT Id, Azure_AD_Email_Id__c
+            FROM User
+            WHERE Id IN :memberUserIds
+            AND Azure_AD_Email_Id__c != null
+            WITH USER_MODE
+        ];
+
+        if (members.isEmpty()) {
+            throw new AuraHandledException('None of the selected users have an Azure AD Email Id populated.');
+        }
+
+        List<String> memberIdentifiers = new List<String>();
+        for (User u : members) {
+            memberIdentifiers.add(u.Azure_AD_Email_Id__c);
+        }
+
+        try {
+            if (matchingCase.Swarm_Type__c == 'Chat') {
+                TeamsSwarmService.addChatMembers(matchingCase.Swarm_Team_Id__c, memberIdentifiers);
+            } else {
+                TeamsSwarmService.addMembers(matchingCase.Swarm_Group_Id__c, memberIdentifiers);
+            }
+        } catch (TeamsSwarmService.TeamsSwarmException e) {
+            throw new AuraHandledException('Could not add members: ' + e.getMessage());
+        }
     }
 
-    this.isResetting = true;
-    try {
-      await resetSwarm({ caseId: this.recordId, usage: null });
-      this.dispatchEvent(
-        new ShowToastEvent({
-          title: "Swarm data cleared",
-          message: "This case is ready for a new swarm.",
-          variant: "success"
-        })
-      );
-      this.selectedMembers = [];
-      this.searchResults = [];
-      this.currentMembers = [];
-      this.membersLoaded = false;
-      this.stopPolling();
-      await refreshApex(this.wiredCaseRecord);
-      await notifyRecordUpdateAvailable([{ recordId: this.recordId }]);
-    } catch (error) {
-      this.showError("Could not clear swarm data", error);
-    } finally {
-      this.isResetting = false;
-    }
-  }
+    /**
+     * Live member list straight from Graph (Teams is the source of truth - this app doesn't
+     * track swarm membership in Salesforce). removalId on each row is opaque to the LWC; it's
+     * whatever TeamsSwarmService.removeMemberFromSwarm needs back to remove that same member.
+     */
+    @AuraEnabled
+    public static List<TeamsSwarmService.MemberInfo> getSwarmMembers(Id caseId) {
+        Case matchingCase = [
+            SELECT Id, Swarm_Team_Id__c, Swarm_Group_Id__c, Swarm_Status__c, Swarm_Type__c
+            FROM Case
+            WHERE Id = :caseId
+            WITH USER_MODE
+            LIMIT 1
+        ];
 
-  async handleEndChat() {
-    const confirmed = await LightningConfirm.open({
-      label: "End Chat",
-      message:
-        "This saves the Teams conversation as Swarm Message records on the Case, clears swarm fields so the Case is ready for a new swarm, and deletes the chat in Microsoft Teams for everyone in it.",
-      theme: "warning"
-    });
-    if (!confirmed) {
-      return;
+        if (matchingCase.Swarm_Status__c != 'Active' || String.isBlank(matchingCase.Swarm_Team_Id__c)) {
+            throw new AuraHandledException('This case does not have an active swarm.');
+        }
+
+        try {
+            return matchingCase.Swarm_Type__c == 'Chat'
+                ? TeamsSwarmService.listChatMembers(matchingCase.Swarm_Team_Id__c)
+                : TeamsSwarmService.listGroupMembers(matchingCase.Swarm_Group_Id__c);
+        } catch (TeamsSwarmService.TeamsSwarmException e) {
+            throw new AuraHandledException('Could not load swarm members: ' + e.getMessage());
+        }
     }
 
-    this.isEndingChat = true;
-    try {
-      const result = await endChat({ caseId: this.recordId, messages: [] });
-      const savedCount = result?.savedCount || 0;
-      const chatDeleteSuffix = result?.chatDeleteRequested
-        ? " The Teams chat is being deleted."
-        : "";
-      this.dispatchEvent(
-        new ShowToastEvent({
-          title: "Chat ended",
-          message:
-            savedCount === 0
-              ? `Swarm fields cleared. No messages were available to save.${chatDeleteSuffix}`
-              : `Saved ${savedCount} message(s) to the Case transcript and cleared swarm fields.${chatDeleteSuffix}`,
-          variant: savedCount === 0 ? "warning" : "success"
-        })
-      );
-      this.selectedMembers = [];
-      this.searchResults = [];
-      this.currentMembers = [];
-      this.membersLoaded = false;
-      this.stopPolling();
-      await refreshApex(this.wiredCaseRecord);
-      await notifyRecordUpdateAvailable([{ recordId: this.recordId }]);
-    } catch (error) {
-      this.showError("Could not end chat", error);
-    } finally {
-      this.isEndingChat = false;
-    }
-  }
+    @AuraEnabled
+    public static void removeMemberFromSwarm(Id caseId, String removalId) {
+        if (String.isBlank(removalId)) {
+            throw new AuraHandledException('No member selected to remove.');
+        }
 
-  showError(title, error) {
-    const message = error?.body?.message || error?.message || "Unknown error";
-    this.dispatchEvent(
-      new ShowToastEvent({
-        title,
-        message,
-        variant: "error"
-      })
-    );
-  }
+        Case matchingCase = [
+            SELECT Id, Swarm_Team_Id__c, Swarm_Group_Id__c, Swarm_Status__c, Swarm_Type__c
+            FROM Case
+            WHERE Id = :caseId
+            WITH USER_MODE
+            LIMIT 1
+        ];
+
+        if (matchingCase.Swarm_Status__c != 'Active' || String.isBlank(matchingCase.Swarm_Team_Id__c)) {
+            throw new AuraHandledException('This case does not have an active swarm to remove members from.');
+        }
+
+        try {
+            if (matchingCase.Swarm_Type__c == 'Chat') {
+                TeamsSwarmService.removeChatMember(matchingCase.Swarm_Team_Id__c, removalId);
+            } else {
+                TeamsSwarmService.removeGroupMember(matchingCase.Swarm_Group_Id__c, removalId);
+            }
+        } catch (TeamsSwarmService.TeamsSwarmException e) {
+            throw new AuraHandledException('Could not remove member: ' + e.getMessage());
+        }
+    }
 }
